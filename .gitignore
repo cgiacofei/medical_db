@@ -1,0 +1,5 @@
+tags
+venv
+environment
+project/server/dev.sqlite
+htmlcov
