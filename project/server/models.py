@@ -13,6 +13,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    street_address = db.Column(db.String(64), nullable=True)
+    city = db.Column(db.String(64), nullable=True)
+    state = db.Column(db.String(2), nullable=True)
+    zip_code = db.Column(db.Integer, nullable=True)
     registered_on = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -38,3 +42,5 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {0}>'.format(self.email)
+
+
