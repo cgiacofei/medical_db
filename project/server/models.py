@@ -2,6 +2,7 @@
 # https://gist.github.com/kirang89/10030736
 
 import datetime
+from sqlalchemy.ext.declarative import declared_attr
 
 from project.server import app, db, bcrypt
 
@@ -10,9 +11,14 @@ Base = db.Model
 class BaseModel(object):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-	# Attachments
-    attachment_id = db.Column(db.Integer, db.ForeignKey('attachment.id'))
-    attachment = db.relationship('Attachment', backref='attachments', lazy='dynamic')
+    # Attachments
+    @declared_attr
+    def attachment_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('attachment.id'))
+
+    @declared_attr
+    def attachment(cls):
+        return db.relationship('Attachment', backref='attachments', lazy='dynamic')
 
 
 class User(BaseModel, Base):
