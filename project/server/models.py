@@ -11,7 +11,7 @@ class BaseModel(object):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
 	# Attachments
-    attachment_id = db.Column(db.Integer, ForeignKey('attachment.id'))
+    attachment_id = db.Column(db.Integer, db.ForeignKey('attachment.id'))
     attachment = db.relationship('Attachment', backref='attachments', lazy='dynamic')
 
 
@@ -28,7 +28,7 @@ class User(BaseModel, Base):
     registered_on = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
-    symptoms = relationship('Symptom', secondary='user_symptom')
+    symptoms = db.relationship('Symptom', secondary='user_symptom')
 
     def __init__(self, email, password, admin=False):
         self.email = email
@@ -56,41 +56,41 @@ class User(BaseModel, Base):
 
 class Appointment(BaseModel, Base):
     """"""
-    user_id = db.Column(db.Integer, ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date = db.Column(db.DateTime, nullable=False)
     notes = db.Column(db.Text, unique=True, nullable=False)
-    treatments = relationship('Treatment', secondary='user_symptom_treatment')
+    treatments = db.relationship('Treatment', secondary='user_symptom_treatment')
     user = db.relationship('User', backref='appointments', lazy='dynamic')
 
 class Treatment(BaseModel, Base):
     """"""
-    name = Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     notes = db.Column(db.Text, unique=True, nullable=False)
 
 
 class Symptom(BaseModel, Base):
     """"""
-    name = Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     notes = db.Column(db.Text, unique=True, nullable=False)
 
 
 class User_Symptom(BaseModel, Base):
     """"""
     __tablename__ = 'user_symptom'
-    user_id = db.Column(db.Integer, ForeignKey('users.id'))
-    symptom_id = db.Column(db.Integer, ForeignKey('symptom.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom.id'))
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     notes = db.Column(db.Text, unique=True, nullable=True)
-    treatments = relationship('Treatment', secondary='user_symptom_treatment')
+    treatments = db.relationship('Treatment', secondary='user_symptom_treatment')
 
 
 class User_Symptom_Treatment(BaseModel, Base):
     """"""
     __tablename__ = 'user_symptom_treatment'
-    user_symptom_id = db.Column(db.Integer, ForeignKey('user_symptom.id'))
-    treatment_id = db.Column(db.Integer, ForeignKey('treatment.id'))
-    appointment_id = db.Column(db.Integer, ForeignKey('appointment.id'))
+    user_symptom_id = db.Column(db.Integer, db.ForeignKey('user_symptom.id'))
+    treatment_id = db.Column(db.Integer, db.ForeignKey('treatment.id'))
+    appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))
     date = db.Column(db.DateTime, nullable=False)
     notes = db.Column(db.Text, unique=True, nullable=True)
 
@@ -103,7 +103,7 @@ class Attachment(BaseModel, Base):
 
 class Provider(BaseModel, Base):
 	""""""
-	first_name = Column(db.String(80), nullable=False)
-	last_name = Column(db.String(80), nullable=False)
-	suffix = Column(db.String(8), nullable=True)
-	specialty = Column(db.String(80), nullable=True)
+	first_name = db.Column(db.String(80), nullable=False)
+	last_name = db.Column(db.String(80), nullable=False)
+	suffix = db.Column(db.String(8), nullable=True)
+	specialty = db.Column(db.String(80), nullable=True)
