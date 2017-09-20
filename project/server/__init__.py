@@ -87,7 +87,7 @@ class AdminView(BaseView):
     def index(self):
         return self.render('admin/index.html')
 
-admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(User, db.session, endpoint='users'))
 admin.add_view(ModelView(Appointment, db.session))
 admin.add_view(ModelView(Treatment, db.session))
 admin.add_view(ModelView(Symptom, db.session))
