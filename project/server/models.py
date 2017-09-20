@@ -13,12 +13,9 @@ class BaseModel(object):
 
     # Attachments
     @declared_attr
-    def attachment_id(cls):
-        return db.Column(db.Integer, db.ForeignKey('attachment.id'))
-
-    @declared_attr
     def attachment(cls):
-        return db.relationship('Attachment', backref='attachments', lazy='dynamic')
+        field = cls.__name__.lower()
+        return db.relationship('Attachment', backref=field, lazy='dynamic')
 
 
 class User(BaseModel, Base):
@@ -35,6 +32,7 @@ class User(BaseModel, Base):
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
     symptoms = db.relationship('Symptom', secondary='user_symptom')
+    appointments = db.relationship('Appointment', backref='users', lazy='dynamic')
 
     def __init__(self, email, password, admin=False):
         self.email = email
@@ -66,7 +64,7 @@ class Appointment(BaseModel, Base):
     date = db.Column(db.DateTime, nullable=False)
     notes = db.Column(db.Text, nullable=False)
     treatments = db.relationship('Treatment', secondary='user_symptom_treatment')
-    user = db.relationship('User', backref='appointments', lazy='dynamic')
+
 
 class Treatment(BaseModel, Base):
     """"""
@@ -101,10 +99,20 @@ class User_Symptom_Treatment(BaseModel, Base):
     notes = db.Column(db.Text, nullable=True)
 
 
-class Attachment(BaseModel, Base):
-	""""""
-	path = db.Column(db.String(4096), nullable=False)
-	attachment_type = db.Column(db.String(255), nullable=True)
+class Attachment(Base):
+    """"""
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    path = db.Column(db.String(4096), nullable=False)
+    attachment_type = db.Column(db.String(255), nullable=True)
+
+    # Tables for attachments
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    symptom_id = db.Column(db.Integer, db.ForeignKey('symptom.id'))
+    user_symptom_id = db.Column(db.Integer, db.ForeignKey('user_symptom.id'))
+    user_symptom_treatment_id = db.Column(db.Integer, db.ForeignKey('user_symptom_treatment.id'))
+    treatment_id = db.Column(db.Integer, db.ForeignKey('treatment.id'))
+    appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))
+    provider_id = db.Column(db.Integer, db.ForeignKey('provider.id'))
 
 
 class Provider(BaseModel, Base):

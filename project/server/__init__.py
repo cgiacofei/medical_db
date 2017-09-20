@@ -25,7 +25,6 @@ app = Flask(
     static_folder='../client/static'
 )
 
-
 app_settings = os.getenv('APP_SETTINGS', 'project.server.config.DevelopmentConfig')
 app.config.from_object(app_settings)
 
@@ -52,9 +51,9 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(main_blueprint)
 
 
-###################
-### flask-login ####
-###################
+#####################
+#### flask-login ####
+#####################
 
 from project.server.models import User
 
@@ -66,6 +65,36 @@ login_manager.login_message_category = 'danger'
 def load_user(user_id):
     return User.query.filter(User.id == int(user_id)).first()
 
+#####################
+#### flask-admin ####
+#####################
+
+from flask.ext.admin import Admin, BaseView, expose
+from flask.ext.admin.contrib.sqla import ModelView
+
+from project.server.models import Appointment
+from project.server.models import Treatment
+from project.server.models import Symptom
+from project.server.models import User_Symptom
+from project.server.models import User_Symptom_Treatment
+from project.server.models import Attachment
+from project.server.models import Provider
+
+admin = Admin(app)
+
+class AdminView(BaseView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/index.html')
+
+admin.add_view(ModelView(User, db.session, endpoint='users'))
+admin.add_view(ModelView(Appointment, db.session))
+admin.add_view(ModelView(Treatment, db.session))
+admin.add_view(ModelView(Symptom, db.session))
+admin.add_view(ModelView(User_Symptom, db.session))
+admin.add_view(ModelView(User_Symptom_Treatment, db.session))
+admin.add_view(ModelView(Attachment, db.session))
+admin.add_view(ModelView(Provider, db.session))
 
 ########################
 #### error handlers ####
